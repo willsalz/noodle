@@ -1,40 +1,33 @@
-extern crate noodle;
-
 use std::collections::HashMap;
-use std::net::SocketAddr;
+use std::net::{SocketAddr, UdpSocket};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-enum PeerState {
+enum State {
     Alive,
-    Suspect,
     Dead,
 }
 
-type PeerClock = u64;
+type Clock = u64;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 struct Peer {
-    state: PeerState,
-    clock: PeerClock,
+    state: State,
 }
 
 impl Peer {
     fn new() -> Self {
-        Peer {
-            state: PeerState::Alive,
-            clock: 0,
-        }
+        Peer { state: State::Alive }
     }
 }
 
 #[derive(Debug)]
-struct PeerRegistry {
+struct Registry {
     peers: HashMap<SocketAddr, Peer>,
 }
 
-impl PeerRegistry {
+impl Registry {
     fn new() -> Self {
-        PeerRegistry { peers: HashMap::new() }
+        Registry { peers: HashMap::new() }
     }
 
     fn add(&mut self, peer: Peer, address: SocketAddr) {
@@ -43,9 +36,7 @@ impl PeerRegistry {
 }
 
 fn main() {
-    noodle::hello();
-
-    let mut registry = PeerRegistry::new();
+    let mut registry = Registry::new();
     let peer = Peer::new();
     registry.add(peer, "127.0.0.1:8888".parse().unwrap());
     println!("{:?}", registry);
