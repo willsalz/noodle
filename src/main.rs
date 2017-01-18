@@ -35,9 +35,18 @@ impl Registry {
     }
 }
 
+struct FailureDetector;
+
+impl FailureDetector {
+    fn ping(&self, addr: SocketAddr) {}
+}
+
 fn main() {
     let mut registry = Registry::new();
     let peer = Peer::new();
-    registry.add(peer, "127.0.0.1:8888".parse().unwrap());
+    let addr = "127.0.0.1:8888".parse().unwrap();
+    registry.add(peer, addr);
+    let detector = FailureDetector;
+    detector.ping(addr);
     println!("{:?}", registry);
 }
